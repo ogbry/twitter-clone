@@ -1,7 +1,7 @@
-var actionButtons = document.querySelector('.actions');
+var actionButtons = document.querySelector('[data-testid="tweet-actions"]');
 var inputContainer = document.getElementById('composeInput')
 var tweetButton = document.querySelector('.post-tweet')
-var tweetImage = document.querySelector('.fa-image')
+var tweetImage = document.querySelector('.input-button')
 var newTweet = document.querySelector('.post-tweet')
 var addTweet = document.querySelector('.tweets')
 var messageCount = document.querySelector('.message-count')
@@ -9,28 +9,28 @@ var messageCount = document.querySelector('.message-count')
 actionButtons.style.display = 'none';
 
 inputContainer.addEventListener('focus', function(event){
-    inputContainer.style.height = '100px';
+    inputContainer.classList.add('expanded')
     actionButtons.style.display = 'flex';
+    tweetImage.style.display = 'none'
 })
 
 inputContainer.addEventListener('blur', function(){
     var inputLength = inputContainer.value.length
 
-    inputContainer.style.height = '34px';
+    inputContainer.classList.remove('danger')
     actionButtons.style.display = 'none';
     tweetImage.style.display = 'flex'
 
     if(inputLength > 0){
-        inputContainer.style.height = '100px';
+        inputContainer.classList.add('expanded')
         actionButtons.style.display = 'flex';
     }
     else{
-        inputContainer.style.height = '34px';
+        inputContainer.classList.remove('expanded')
     }
 })
 
 inputContainer.addEventListener('keyup', function(){
-    tweetImage.style.display = 'none'
     var inputLength = inputContainer.value.length
     var maxlength = inputContainer.maxLength
 
@@ -38,10 +38,17 @@ inputContainer.addEventListener('keyup', function(){
         tweetButton.disabled = false;
         let newMessageCount = maxlength - inputLength;
         messageCount.innerHTML = newMessageCount
+        if(newMessageCount <= 10){
+          messageCount.classList.add('danger')
+        }
+        else{
+          messageCount.classList.remove('danger')
+        }
     }
     else{
         messageCount.innerHTML = 280
         tweetButton.disabled = true;
+        messageCount.classList.remove('danger')
     }
 })
 
@@ -69,11 +76,10 @@ newTweet.addEventListener('click', function(){
   </div>`
 
     addTweet.prepend(tweet)
-    
+
     messageCount.innerHTML = 0
     actionButtons.style.display = 'none';
     inputContainer.style.height = '34px';
     inputContainer.value = '';
     
 })
-
